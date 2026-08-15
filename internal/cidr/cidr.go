@@ -201,16 +201,16 @@ func LongestContains(cidrs []string, ipStr string) (ContainsMatch, error) {
 // 解析失败的条目导致整体返回错误；输入为空时返回空切片。
 func Aggregate(cidrs []string) ([]Block, error) {
 	blocks := make([]Block, 0, len(cidrs))
-	seen := make(map[uint32]struct{}, len(cidrs))
+	seen := make(map[Block]struct{}, len(cidrs))
 	for _, c := range cidrs {
 		b, _, err := ParseCIDR(c)
 		if err != nil {
 			return nil, err
 		}
-		if _, ok := seen[b.Network]; ok {
+		if _, ok := seen[b]; ok {
 			continue // 去重
 		}
-		seen[b.Network] = struct{}{}
+		seen[b] = struct{}{}
 		blocks = append(blocks, b)
 	}
 	if len(blocks) == 0 {
